@@ -53,10 +53,10 @@ socket.on('message', data  => {
     li.innerHTML = 
     `
     <p style="color:#ccc">
-        <span class="user">${data.user}</span>
+        <span class="user" style="color:${data.color}">${data.user}</span>
         ${data.createAt}
     </p>
-    <p class='content'>${data.content}</p>
+    <p class='content' style="background:${data.color}">${data.content}</p>
     `
     //将li添加到list列表中
     list.appendChild(li)
