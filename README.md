@@ -1,3 +1,8 @@
+[引用于][https://www.javascriptc.com/2887.html]
+
+[git地址][https://github.com/chenhongdong/article/tree/develop/websocket/chat]
+
+
 ## 聊天室的开发过程
 ```
 // index.html文件
