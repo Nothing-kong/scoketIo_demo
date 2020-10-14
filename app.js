@@ -18,12 +18,33 @@ io.on('connection', socket => {
     socket.on('message', msg => {
         // 服务端发送message事件 吧msg消息再发送给客户端
         if (username) {//如果有用户名
-            // 向所有人广播
-            io.emit('message', {
-                user:username,
-                content:msg,
-                createAt:new Date().toLocaleTimeString(),
-            })
+            // 正则判断消息是否为私聊
+            let private = msg.match(/@([^ ]+) (.+)/)
+            if (private) {
+                // 私聊的用户，正则匹配的第一个分组
+                let toUser = private[1]
+                // 私聊的内容，正则匹配的第二个分组
+                let content = private[2]
+                // 从socketObj中获取私聊用户的socket
+                let toSocket = socketObj[toUser]
+
+                if (toSocket) {
+                    // 向私聊的用户发消息
+                    toSocket.send({
+                        user:username,
+                        content,
+                        createAt:new Date().toLocaleTimeString(),
+                    })
+                }
+            }else{
+                // 向所有人广播
+                io.emit('message', {
+                    user:username,
+                    content:msg,
+                    createAt:new Date().toLocaleTimeString(),
+                })
+            }
+            
         }else{//没有用户名
             // 如果第一次进入 将输入的内容作为用户名
             username = msg;
@@ -33,6 +54,7 @@ io.on('connection', socket => {
                 content:`${username}加入聊天！`,
                 createAt:new Date().toLocaleTimeString()
             })
+            socketObj[username] = socket
         }
     })
 })
